@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_search"
+        android:icon="@drawable/ic_person_search"
+        android:title="Search Partner" />
+
+    <item
+        android:id="@+id/nav_chat"
+        android:icon="@drawable/ic_friendship"
+        android:title="Chat With Partners" />
+
+    <item
+        android:id="@+id/nav_about"
+        android:icon="@drawable/ic_info"
+        android:title="About Us" />
+</menu>

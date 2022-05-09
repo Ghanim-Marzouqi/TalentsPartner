@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1047023220923",
+    "firebase_url": "https://talents-partner-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "talents-partner",
+    "storage_bucket": "talents-partner.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1047023220923:android:32e7c9642a191a10ac119e",
+        "android_client_info": {
+          "package_name": "com.example.talentspartner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1047023220923-73dv6r1244prbet0l3i5fhhth8b795bg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2mtHujI91gs_bH9mH6UPj6Bih0eTh_js"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1047023220923-73dv6r1244prbet0l3i5fhhth8b795bg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
