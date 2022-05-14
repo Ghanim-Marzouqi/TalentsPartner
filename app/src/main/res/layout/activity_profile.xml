@@ -24,7 +24,7 @@
         android:clickable="true"
         android:focusable="true"
         android:paddingTop="8dp"
-        android:src="@drawable/person_placeholder"
+        android:src="@drawable/male_placeholder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view"
@@ -54,6 +54,7 @@
                 android:src="@drawable/ic_person" />
 
             <EditText
+                android:id="@+id/et_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -78,6 +79,7 @@
                 android:src="@drawable/ic_mail" />
 
             <EditText
+                android:id="@+id/et_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -87,6 +89,8 @@
                 android:textColor="@color/black"
                 android:textSize="7pt"
                 android:textStyle="bold"
+                android:inputType="none"
+                android:enabled="false"
                 tools:ignore="TouchTargetSizeCheck" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -102,6 +106,7 @@
                 android:src="@drawable/ic_phone" />
 
             <EditText
+                android:id="@+id/et_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -111,6 +116,77 @@
                 android:textColor="@color/black"
                 android:textSize="7pt"
                 android:textStyle="bold"
+                tools:ignore="TouchTargetSizeCheck" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:src="@drawable/ic_gender" />
+
+            <Spinner
+                android:id="@+id/sp_gender"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ems="10"
+                android:inputType="number"
+                android:background="@drawable/edittext"
+                android:textStyle="bold"
+                tools:ignore="SpeakableTextPresentCheck" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:src="@drawable/ic_age" />
+
+            <EditText
+                android:id="@+id/et_age"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/edittext"
+                android:padding="10dp"
+                android:text="User Age"
+                android:textColor="@color/black"
+                android:textSize="7pt"
+                android:textStyle="bold"
+                tools:ignore="TouchTargetSizeCheck" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:src="@drawable/ic_talents" />
+
+            <EditText
+                android:id="@+id/et_talents"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/edittext"
+                android:padding="10dp"
+                android:hint="Enter talents as comma separated values"
+                android:textColor="@color/black"
+                android:textSize="7pt"
                 tools:ignore="TouchTargetSizeCheck" />
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.appcompat.widget.LinearLayoutCompat>

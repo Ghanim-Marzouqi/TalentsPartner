@@ -1,34 +1,36 @@
 package com.example.talentspartner;
 
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-
 import com.example.talentspartner.fragments.AboutFragment;
 import com.example.talentspartner.fragments.ChatFragment;
 import com.example.talentspartner.fragments.SearchFragment;
+import com.example.talentspartner.models.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
-    // customer name and email
-    String name = "", email = "", image = "";
-
+    // Declare
     TextView drawer_user_name;
     TextView drawer_user_email;
     ImageView drawer_user_image;
@@ -37,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
     NavigationView navigationView;
     BottomNavigationView bottomNavigationView;
     FragmentManager manager;
+
+    private FirebaseAuth auth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +54,10 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Search Partner");
         }
+
+        // Initialize Firebase Auth & Database
+        auth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         // drawer
         drawer = findViewById(R.id.drawer_layout);
@@ -90,35 +99,50 @@ public class MainActivity extends AppCompatActivity {
         // set first selection tab
         manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.fragment, new SearchFragment()).commit();
+    }
 
-        // check for shared preferences
-        SharedPreferences sp = getSharedPreferences("USER", MODE_PRIVATE);
-        String data = sp.getString("user", "");
+    @Override
+    protected void onStart() {
+        // Get user data
+        FirebaseUser firebaseUser = auth.getCurrentUser();
 
-        // check of there is any available data
-        if(!data.equals("")) {
-            try {
-                JSONObject jsonObject = new JSONObject(data);
+        if (firebaseUser != null && !firebaseUser.getUid().isEmpty()) {
+            DocumentReference docRef = db.collection("users").document(firebaseUser.getUid());
+            docRef.get().addOnCompleteListener(dbTask -> {
+                if (dbTask.isSuccessful()) {
+                    DocumentSnapshot document = dbTask.getResult();
+                    assert document != null;
+                    if (document.exists()) {
+                        // Instantiate logged in user
+                        User user = document.toObject(User.class);
 
-                // get user name
-                name = jsonObject.getString("name");
-                email = jsonObject.getString("email");
-                image = jsonObject.getString("image");
+                        String name = user.getName();
+                        String email = user.getEmail();
+                        String gender = user.getGender();
+                        String imageUrl = user.getImageUrl();
 
-                // set Drawer views
-                drawer_user_name.setText(name);
-                drawer_user_email.setText(email);
-                Picasso.with(this)
-                        .load(image)
-                        .resize(96, 96)
-                        .centerCrop()
-                        .placeholder(R.drawable.person_placeholder)
-                        .into(drawer_user_image);
+                        // set Drawer views
+                        drawer_user_name.setText(name);
+                        drawer_user_email.setText(email);
 
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+                        if (!imageUrl.isEmpty()) {
+                            Picasso.with(MainActivity.this)
+                                    .load(imageUrl)
+                                    .resize(96, 96)
+                                    .centerCrop()
+                                    .placeholder(R.drawable.male_placeholder)
+                                    .into(drawer_user_image);
+                        }
+                    } else {
+                        Toast.makeText(this, "User doesn't exist", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(this, "Cannot get user data", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
+
+        super.onStart();
     }
 
     @Override
@@ -153,9 +177,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if(id == R.id.logout) {
-            // clear Shared Preferences
-            SharedPreferences sp = getSharedPreferences("USER", MODE_PRIVATE);
-            sp.edit().clear().apply();
+            // Sign Out user
+            auth.signOut();
             finish();
         }
 
@@ -188,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
                     shareApp();
                     return true;
                 case R.id.nav_contact_us:
-                    // Contact us
+                    composeEmail(new String[]{"mroojproj@gmail.com"});
                     return true;
             }
             drawer.closeDrawer(GravityCompat.START);
@@ -203,5 +226,13 @@ public class MainActivity extends AppCompatActivity {
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Talents Partner App");
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
         startActivity(Intent.createChooser(sharingIntent, "Share via"));
+    }
+
+    public void composeEmail(String[] addresses) {
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto","mroojproj@gmail.com", null));
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, addresses);
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Contact Talents Partner");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, "Thank you for contacting us. Please write us what is in your mind: ");
+        startActivity(Intent.createChooser(emailIntent, "Send email..."));
     }
 }

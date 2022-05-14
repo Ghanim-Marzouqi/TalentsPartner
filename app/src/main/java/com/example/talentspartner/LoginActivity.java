@@ -1,12 +1,9 @@
 package com.example.talentspartner;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.LinearLayoutCompat;
-
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Patterns;
 import android.widget.Button;
 import android.widget.Checkable;
@@ -14,8 +11,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.LinearLayoutCompat;
+
+import com.example.talentspartner.models.User;
+import com.example.talentspartner.models.UserCredentials;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.gson.Gson;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -26,6 +32,8 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnSignIn, btnSignUp;
     private LinearLayoutCompat llSkip;
     private FirebaseAuth auth;
+    private FirebaseFirestore db;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +49,9 @@ public class LoginActivity extends AppCompatActivity {
         btnSignUp = findViewById(R.id.btn_sign_up);
         llSkip = findViewById(R.id.ll_skip);
 
-        // Initialize Firebase Auth
+        // Initialize Firebase Auth & Firestore Database
         auth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         // Click listeners
         btnSignIn.setOnClickListener(view -> {
@@ -55,14 +64,42 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            // TODO: Check if user registered
-
             // Sign in user
             auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, task -> {
                 if (task.isSuccessful()) {
                     // Sign in success, update UI with the signed-in user's information
-                    FirebaseUser user = auth.getCurrentUser();
-                    Log.i("User Id", user.getUid());
+                    FirebaseUser firebaseUser = auth.getCurrentUser();
+
+                    // Store user in shared preferences after fetching from database
+                    DocumentReference docRef = db.collection("users").document(firebaseUser.getUid());
+                    docRef.get().addOnCompleteListener(dbTask -> {
+                        if (dbTask.isSuccessful()) {
+                            DocumentSnapshot document = dbTask.getResult();
+                            assert document != null;
+                            if (document.exists()) {
+                                // Instantiate logged in user
+                                user = document.toObject(User.class);
+
+                                // Store user credentials if checkbox checked
+                                SharedPreferences sp = getSharedPreferences("USER", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sp.edit();
+
+                                if (cbRememberMe.isChecked()) {
+                                    UserCredentials userCredentials = new UserCredentials(email, password, cbRememberMe.isChecked());
+                                    String credentials = new Gson().toJson(userCredentials);
+                                    editor.putString("credentials", credentials);
+                                } else {
+                                    editor.putString("credentials", "");
+                                }
+                                editor.apply();
+                            } else {
+                                Toast.makeText(this, "User doesn't exist", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(this, "Cannot get user data", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
                     goToHomePage();
                 } else {
                     Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
@@ -91,6 +128,19 @@ public class LoginActivity extends AppCompatActivity {
 
         if(currentUser != null){
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        }
+
+        SharedPreferences sp = getSharedPreferences("USER", MODE_PRIVATE);
+        String credentials = sp.getString("credentials", "");
+
+        // check of there is any available data
+        if(!credentials.equals("")) {
+            UserCredentials userCredentials = new Gson().fromJson(credentials, UserCredentials.class);
+
+            // set Drawer views
+            etEmail.setText(userCredentials.getEmail());
+            etPassword.setText(userCredentials.getPassword());
+            cbRememberMe.setChecked(userCredentials.isRemembered());
         }
     }
 

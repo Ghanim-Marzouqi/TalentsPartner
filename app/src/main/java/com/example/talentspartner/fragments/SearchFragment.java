@@ -1,5 +1,8 @@
 package com.example.talentspartner.fragments;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,60 +10,127 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.talentspartner.R;
+import com.example.talentspartner.models.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.squareup.picasso.Picasso;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SearchFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.List;
+
 public class SearchFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    List<User> talentedPeople = new ArrayList<>();
+    ListView lvTalentedPeople;
+    FirebaseAuth auth;
+    FirebaseFirestore db;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View fragment = inflater.inflate(R.layout.fragment_search, container, false);
 
-    public SearchFragment() {
-        // Required empty public constructor
-    }
+        // Initialize
+        lvTalentedPeople = fragment.findViewById(R.id.lv_talented_people);
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SearchFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SearchFragment newInstance(String param1, String param2) {
-        SearchFragment fragment = new SearchFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+        // Initialize Firebase Auth & Database
+        auth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+
+        FirebaseUser firebaseUser = auth.getCurrentUser();
+
+        // Load all available people except the current user
+        db.collection("users").addSnapshotListener((value, error) -> {
+            assert value != null;
+            for (QueryDocumentSnapshot document : value) {
+                User person = document.toObject(User.class);
+                if (firebaseUser == null || !person.getId().equals(firebaseUser.getUid()))
+                    talentedPeople.add(person);
+            }
+
+            // View list of people
+            if (talentedPeople.size() > 0) {
+                MyAdapter adapter = new MyAdapter(getActivity(), talentedPeople);
+                lvTalentedPeople.setAdapter(adapter);
+            }
+        });
+
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    private class MyAdapter extends BaseAdapter {
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false);
+        List<User> people;
+        LayoutInflater inflater;
+        User person = new User();
+
+        public MyAdapter(Activity activity, List<User> people) {
+            this.people = people;
+            inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+
+        @Override
+        public int getCount() {
+            if(people.size() <= 0){
+                return 1;
+            }
+            return people.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return i;
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return 0;
+        }
+
+        public class ViewHolder{
+            public ImageView ivAvatar;
+            public TextView tvPersonName;
+            public TextView tvPersonTalents;
+            public ImageView ivViewDetails;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            @SuppressLint({"ViewHolder", "InflateParams"}) View v = inflater.inflate(R.layout.custom_person_card, null);
+            MyAdapter.ViewHolder holder = new MyAdapter.ViewHolder();
+
+            if(v != null){
+                holder.ivAvatar = v.findViewById(R.id.iv_avatar);
+                holder.tvPersonName = v.findViewById(R.id.tv_person_name);
+                holder.tvPersonTalents = v.findViewById(R.id.tv_person_talents);
+                holder.ivViewDetails = v.findViewById(R.id.iv_view_details);
+            }
+
+            if(people.size() <= 0){
+                holder.tvPersonName.setText("Unknown");
+            } else {
+                person = people.get(i);
+                holder.tvPersonName.setText(person.getName());
+                holder.tvPersonTalents.setText(person.getTalents());
+                if (!person.getImageUrl().isEmpty()) {
+                    Picasso.with(getActivity())
+                            .load(person.getImageUrl())
+                            .resize(96, 96)
+                            .centerCrop()
+                            .placeholder(R.drawable.male_placeholder)
+                            .into(holder.ivAvatar);
+                }
+            }
+
+            return v;
+        }
     }
 }

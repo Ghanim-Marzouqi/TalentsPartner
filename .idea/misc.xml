@@ -6,13 +6,18 @@
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/button.xml" value="0.297" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/button_outlined.xml" value="0.297" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/edittext.xml" value="0.297" />
+        <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/ic_age.xml" value="0.2995" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/ic_arrow_back.xml" value="0.297" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/ic_arrow_forward.xml" value="0.297" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/ic_chat.xml" value="0.297" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/ic_friendship.xml" value="0.297" />
+        <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/ic_gender.xml" value="0.2995" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/ic_person_search.xml" value="0.297" />
+        <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/ic_phone.xml" value="0.2995" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/ic_search.xml" value="0.297" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/ic_share.xml" value="0.297" />
+        <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/ic_talents.xml" value="0.2995" />
+        <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/ic_view.xml" value="0.4485" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/layout/activity_forgot_password.xml" value="0.35597826086956524" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/layout/activity_intro_slider.xml" value="0.35597826086956524" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/layout/activity_login.xml" value="0.35597826086956524" />
@@ -20,6 +25,7 @@
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/layout/activity_profile.xml" value="0.35597826086956524" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/layout/activity_registration.xml" value="0.35597826086956524" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/layout/activity_splash.xml" value="0.35597826086956524" />
+        <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/layout/custom_person_card.xml" value="0.553125" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/layout/fragment_about.xml" value="0.35597826086956524" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/layout/fragment_chat.xml" value="0.35597826086956524" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/layout/fragment_search.xml" value="0.35597826086956524" />

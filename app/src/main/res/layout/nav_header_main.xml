@@ -16,7 +16,7 @@
         android:layout_width="96dp"
         android:layout_height="96dp"
         android:paddingTop="8dp"
-        android:src="@drawable/person_placeholder"
+        android:src="@drawable/male_placeholder"
         android:clickable="true"
         android:focusable="true"/>
 
