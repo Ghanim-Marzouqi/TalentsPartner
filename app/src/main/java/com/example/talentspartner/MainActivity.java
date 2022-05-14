@@ -71,9 +71,6 @@ public class MainActivity extends AppCompatActivity {
         drawer_user_image = headerView.findViewById(R.id.iv_profile);
         navigationView.setNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        // go to profile page
-        drawer_user_image.setOnClickListener(view -> startActivity(new Intent(MainActivity.this, ProfileActivity.class)));
-
         // bottom navigation
         bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
@@ -203,9 +200,15 @@ public class MainActivity extends AppCompatActivity {
             = new NavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            // Get current logged in user
+            FirebaseUser firebaseUser = auth.getCurrentUser();
+
             switch (item.getItemId()) {
                 case R.id.nav_profile:
-                    startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                    if (firebaseUser != null)
+                        startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                    else
+                        Toast.makeText(MainActivity.this, "You must login first", Toast.LENGTH_SHORT).show();
                     return true;
                 case R.id.nav_share:
                     shareApp();

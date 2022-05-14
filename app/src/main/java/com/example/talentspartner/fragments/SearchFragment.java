@@ -60,7 +60,7 @@ public class SearchFragment extends Fragment {
             }
 
             // View list of people
-            if (talentedPeople.size() > 0) {
+            if (talentedPeople.size() > 0 && getActivity() != null) {
                 adapter = new MyAdapter(getActivity(), talentedPeople);
                 lvTalentedPeople.setAdapter(adapter);
             }

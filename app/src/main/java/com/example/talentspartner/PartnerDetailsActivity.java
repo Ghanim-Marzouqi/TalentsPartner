@@ -11,13 +11,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.talentspartner.models.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class PartnerDetailsActivity extends AppCompatActivity {
 
+    // Declare
     TextView tvName, tvEmail, tvPhone, tvGender, tvAge, tvTalents;
     ImageView ivAvatar;
     Button btnUpdate;
+    FirebaseAuth auth;
+    FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +48,18 @@ public class PartnerDetailsActivity extends AppCompatActivity {
         tvTalents = findViewById(R.id.tv_talents);
         ivAvatar = findViewById(R.id.iv_avatar);
         btnUpdate = findViewById(R.id.btn_update);
+
+        // Initialize Firebase Auth & Database
+        auth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+
+        // Get Firebase User
+        FirebaseUser firebaseUser = auth.getCurrentUser();
+
+        // Settings on startup
+        if (firebaseUser == null) {
+            btnUpdate.setVisibility(View.GONE);
+        }
 
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
@@ -65,7 +86,12 @@ public class PartnerDetailsActivity extends AppCompatActivity {
         }
 
         btnUpdate.setOnClickListener(view -> {
-            // TODO: Implement friendship mechanism
+//            String personId = person.getId();
+//
+//            Map<String, Object> data = new HashMap<>();
+//            data.put("userId", firebaseUser.getUid());
+//
+//            db.collection("friendships").document();
         });
     }
 
