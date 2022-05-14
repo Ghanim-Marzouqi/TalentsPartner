@@ -3,6 +3,7 @@ package com.example.talentspartner.fragments;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.talentspartner.PartnerDetailsActivity;
 import com.example.talentspartner.R;
 import com.example.talentspartner.models.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,6 +32,7 @@ public class SearchFragment extends Fragment {
 
     List<User> talentedPeople = new ArrayList<>();
     ListView lvTalentedPeople;
+    MyAdapter adapter;
     FirebaseAuth auth;
     FirebaseFirestore db;
 
@@ -58,9 +61,26 @@ public class SearchFragment extends Fragment {
 
             // View list of people
             if (talentedPeople.size() > 0) {
-                MyAdapter adapter = new MyAdapter(getActivity(), talentedPeople);
+                adapter = new MyAdapter(getActivity(), talentedPeople);
                 lvTalentedPeople.setAdapter(adapter);
             }
+        });
+
+        lvTalentedPeople.setOnItemClickListener((parent, view, position, id) -> {
+
+            // Detect any changes
+            adapter.notifyDataSetChanged();
+
+            // Get selected person
+            User person = talentedPeople.get(position);
+
+            // send person data to details activity
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("person", person);
+
+            Intent intent = new Intent(getActivity(), PartnerDetailsActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
         });
 
         return fragment;
@@ -99,7 +119,6 @@ public class SearchFragment extends Fragment {
             public ImageView ivAvatar;
             public TextView tvPersonName;
             public TextView tvPersonTalents;
-            public ImageView ivViewDetails;
         }
 
         @Override
@@ -111,7 +130,6 @@ public class SearchFragment extends Fragment {
                 holder.ivAvatar = v.findViewById(R.id.iv_avatar);
                 holder.tvPersonName = v.findViewById(R.id.tv_person_name);
                 holder.tvPersonTalents = v.findViewById(R.id.tv_person_talents);
-                holder.ivViewDetails = v.findViewById(R.id.iv_view_details);
             }
 
             if(people.size() <= 0){
@@ -125,7 +143,7 @@ public class SearchFragment extends Fragment {
                             .load(person.getImageUrl())
                             .resize(96, 96)
                             .centerCrop()
-                            .placeholder(R.drawable.male_placeholder)
+                            .placeholder(R.drawable.person_placeholder)
                             .into(holder.ivAvatar);
                 }
             }

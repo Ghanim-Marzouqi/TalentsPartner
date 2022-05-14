@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
                                     .load(imageUrl)
                                     .resize(96, 96)
                                     .centerCrop()
-                                    .placeholder(R.drawable.male_placeholder)
+                                    .placeholder(R.drawable.person_placeholder)
                                     .into(drawer_user_image);
                         }
                     } else {

@@ -1,6 +1,8 @@
 package com.example.talentspartner.models;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
 
     // properties
     private String id;
