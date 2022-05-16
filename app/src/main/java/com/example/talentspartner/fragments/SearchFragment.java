@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,8 +31,9 @@ import java.util.List;
 
 public class SearchFragment extends Fragment {
 
-    List<User> talentedPeople = new ArrayList<>();
+    SwipeRefreshLayout swipeRefreshLayout;
     ListView lvTalentedPeople;
+    List<User> talentedPeople = new ArrayList<>();
     MyAdapter adapter;
     FirebaseAuth auth;
     FirebaseFirestore db;
@@ -42,32 +44,20 @@ public class SearchFragment extends Fragment {
         View fragment = inflater.inflate(R.layout.fragment_search, container, false);
 
         // Initialize
+        swipeRefreshLayout = fragment.findViewById(R.id.swipe_refresh_layout);
         lvTalentedPeople = fragment.findViewById(R.id.lv_talented_people);
 
         // Initialize Firebase Auth & Database
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        FirebaseUser firebaseUser = auth.getCurrentUser();
-
         // Load all available people except the current user
-        db.collection("users").addSnapshotListener((value, error) -> {
-            assert value != null;
-            for (QueryDocumentSnapshot document : value) {
-                User person = document.toObject(User.class);
-                if (firebaseUser == null || !person.getId().equals(firebaseUser.getUid()))
-                    talentedPeople.add(person);
-            }
+        loadTalentedPeople();
 
-            // View list of people
-            if (talentedPeople.size() > 0 && getActivity() != null) {
-                adapter = new MyAdapter(getActivity(), talentedPeople);
-                lvTalentedPeople.setAdapter(adapter);
-            }
-        });
+        // Pull to refresh list
+        swipeRefreshLayout.setOnRefreshListener(this::loadTalentedPeople);
 
         lvTalentedPeople.setOnItemClickListener((parent, view, position, id) -> {
-
             // Detect any changes
             adapter.notifyDataSetChanged();
 
@@ -84,6 +74,27 @@ public class SearchFragment extends Fragment {
         });
 
         return fragment;
+    }
+
+    private void loadTalentedPeople() {
+        FirebaseUser firebaseUser = auth.getCurrentUser();
+        talentedPeople = new ArrayList<>();
+        db.collection("users").addSnapshotListener((value, error) -> {
+            assert value != null;
+            for (QueryDocumentSnapshot document : value) {
+                User person = document.toObject(User.class);
+                if (firebaseUser == null || !person.getId().equals(firebaseUser.getUid()))
+                    talentedPeople.add(person);
+            }
+
+            // View list of people
+            if (talentedPeople.size() > 0 && getActivity() != null) {
+                adapter = new MyAdapter(getActivity(), talentedPeople);
+                lvTalentedPeople.setAdapter(adapter);
+            }
+
+            swipeRefreshLayout.setRefreshing(false);
+        });
     }
 
     private class MyAdapter extends BaseAdapter {

@@ -5,12 +5,15 @@
       <map>
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/button.xml" value="0.297" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/button_outlined.xml" value="0.297" />
+        <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/button_primary.xml" value="0.215" />
+        <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/button_red.xml" value="0.215" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/edittext.xml" value="0.297" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/ic_age.xml" value="0.2995" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/ic_arrow_back.xml" value="0.297" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/ic_arrow_forward.xml" value="0.297" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/ic_chat.xml" value="0.297" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/ic_friendship.xml" value="0.297" />
+        <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/ic_friendship_requests.xml" value="0.1145" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/ic_gender.xml" value="0.2995" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/ic_person_search.xml" value="0.297" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/ic_phone.xml" value="0.2995" />

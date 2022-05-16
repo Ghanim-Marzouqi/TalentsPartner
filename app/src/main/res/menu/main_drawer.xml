@@ -5,6 +5,10 @@
             android:id="@+id/nav_profile"
             android:icon="@drawable/ic_account"
             android:title="Profile" />
+        <item
+            android:id="@+id/nav_requests"
+            android:icon="@drawable/ic_friendship_requests"
+            android:title="Friendship Requests" />
     </group>
 
     <item android:title="Communication">
