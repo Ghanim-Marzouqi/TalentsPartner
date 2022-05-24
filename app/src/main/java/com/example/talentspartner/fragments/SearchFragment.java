@@ -31,6 +31,7 @@ import java.util.List;
 
 public class SearchFragment extends Fragment {
 
+    // Declaration
     SwipeRefreshLayout swipeRefreshLayout;
     ListView lvTalentedPeople;
     List<User> talentedPeople = new ArrayList<>();

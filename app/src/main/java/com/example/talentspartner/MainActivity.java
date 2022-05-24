@@ -210,6 +210,12 @@ public class MainActivity extends AppCompatActivity {
                     else
                         Toast.makeText(MainActivity.this, "You must login first", Toast.LENGTH_SHORT).show();
                     return true;
+                case R.id.nav_requests:
+                    if (firebaseUser != null)
+                        startActivity(new Intent(MainActivity.this, FriendshipRequestsActivity.class));
+                    else
+                        Toast.makeText(MainActivity.this, "You must login first", Toast.LENGTH_SHORT).show();
+                    return true;
                 case R.id.nav_share:
                     shareApp();
                     return true;

@@ -21,7 +21,9 @@
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/ic_share.xml" value="0.297" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/ic_talents.xml" value="0.2995" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/ic_view.xml" value="0.4485" />
+        <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/drawable/image_view.xml" value="0.209" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/layout/activity_forgot_password.xml" value="0.35597826086956524" />
+        <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/layout/activity_friendship_requests.xml" value="0.36666666666666664" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/layout/activity_intro_slider.xml" value="0.35597826086956524" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/layout/activity_login.xml" value="0.35597826086956524" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/layout/activity_main.xml" value="0.35597826086956524" />
@@ -29,6 +31,7 @@
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/layout/activity_profile.xml" value="0.35597826086956524" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/layout/activity_registration.xml" value="0.35597826086956524" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/layout/activity_splash.xml" value="0.35597826086956524" />
+        <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/layout/custom_friendship_request_card.xml" value="0.33" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/layout/custom_person_card.xml" value="0.553125" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/layout/fragment_about.xml" value="0.35597826086956524" />
         <entry key="..\:/Projects/android/TalentsPartner/app/src/main/res/layout/fragment_chat.xml" value="0.35597826086956524" />

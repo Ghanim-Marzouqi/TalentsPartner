@@ -9,9 +9,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TalentsPartner">
         <activity
-            android:name=".PartnerDetailsActivity"
-            android:label="Partner Details"
+            android:name=".FriendshipRequestsActivity"
             android:exported="false" />
+        <activity
+            android:name=".PartnerDetailsActivity"
+            android:exported="false"
+            android:label="Partner Details" />
         <activity
             android:name=".ProfileActivity"
             android:exported="false" />

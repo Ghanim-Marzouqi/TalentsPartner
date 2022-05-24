@@ -1,5 +1,6 @@
 package com.example.talentspartner;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -35,6 +36,7 @@ public class PartnerDetailsActivity extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseFirestore db;
 
+    @SuppressLint("UseCompatLoadingForColorStateLists")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,7 +96,6 @@ public class PartnerDetailsActivity extends AppCompatActivity {
             assert firebaseUser != null;
             List<Friendship> friendships = new ArrayList<>();
             db.collection("friendships")
-                    .whereEqualTo("userId", firebaseUser.getUid())
                     .get()
                     .addOnCompleteListener(task -> {
                         progressBar.setIndeterminate(false);
@@ -106,12 +107,17 @@ public class PartnerDetailsActivity extends AppCompatActivity {
                                 friendships.add(friendship);
                             }
 
-                            Friendship friendship = findFriendshipFromList(person.getId(), friendships);
+                            Friendship friendship = findFriendshipFromList(firebaseUser.getUid(), person.getId(), friendships);
 
                             if (friendship != null) {
-                                if (!friendship.isHasFriendship()) {
+                                if (!friendship.isHasFriendship() && !friendship.isHasRequestFulfilled()) {
                                     btnUpdate.setVisibility(View.VISIBLE);
                                     btnUpdate.setText("PENDING REQUEST");
+                                    btnUpdate.setBackgroundTintList(getResources().getColorStateList(R.color.button_grey));
+                                    btnUpdate.setEnabled(false);
+                                } else if (!friendship.isHasFriendship() && friendship.isHasRequestFulfilled()) {
+                                    btnUpdate.setVisibility(View.VISIBLE);
+                                    btnUpdate.setText("FRIENDSHIP REJECTED");
                                     btnUpdate.setBackgroundTintList(getResources().getColorStateList(R.color.button_red));
                                     btnUpdate.setEnabled(false);
                                 } else {
@@ -148,10 +154,14 @@ public class PartnerDetailsActivity extends AppCompatActivity {
                                 data.put("userId", firebaseUser.getUid());
                                 data.put("partnerId", person.getId());
                                 data.put("hasFriendship", false);
+                                data.put("hasRequestFulfilled", false);
 
                                 db.collection("friendships").document().set(data).addOnCompleteListener(innerTask -> {
                                     if (innerTask.isSuccessful()) {
                                         Toast.makeText(PartnerDetailsActivity.this, "Your request has been sent successfully", Toast.LENGTH_SHORT).show();
+                                        btnUpdate.setText("PENDING REQUEST");
+                                        btnUpdate.setBackgroundTintList(getResources().getColorStateList(R.color.button_grey));
+                                        btnUpdate.setEnabled(false);
                                     } else {
                                         Toast.makeText(PartnerDetailsActivity.this, "Cannot send a friendship request", Toast.LENGTH_SHORT).show();
                                     }
@@ -170,12 +180,13 @@ public class PartnerDetailsActivity extends AppCompatActivity {
                                     data.put("userId", firebaseUser.getUid());
                                     data.put("partnerId", person.getId());
                                     data.put("hasFriendship", false);
+                                    data.put("hasRequestFulfilled", false);
 
                                     db.collection("friendships").document().set(data).addOnCompleteListener(innerTask -> {
                                         if (innerTask.isSuccessful()) {
                                             Toast.makeText(PartnerDetailsActivity.this, "Your request has been sent successfully", Toast.LENGTH_SHORT).show();
                                             btnUpdate.setText("PENDING REQUEST");
-                                            btnUpdate.setBackgroundTintList(getResources().getColorStateList(R.color.button_red));
+                                            btnUpdate.setBackgroundTintList(getResources().getColorStateList(R.color.button_grey));
                                             btnUpdate.setEnabled(false);
                                         } else {
                                             Toast.makeText(PartnerDetailsActivity.this, "Cannot send a friendship request", Toast.LENGTH_SHORT).show();
@@ -206,9 +217,9 @@ public class PartnerDetailsActivity extends AppCompatActivity {
         finish();
     }
 
-    private Friendship findFriendshipFromList (String id, List<Friendship> friendships) {
+    private Friendship findFriendshipFromList (String userId, String partnerId, List<Friendship> friendships) {
         for (Friendship friendship : friendships) {
-            if (friendship.getPartnerId().equals(id)) {
+            if ((friendship.getUserId().equals(userId) && friendship.getPartnerId().equals(partnerId)) || (friendship.getPartnerId().equals(userId) && friendship.getUserId().equals(partnerId))) {
                 return friendship;
             }
         }

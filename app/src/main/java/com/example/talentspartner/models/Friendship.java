@@ -6,15 +6,17 @@ public class Friendship {
     private String userId;
     private String partnerId;
     private boolean hasFriendship;
+    private boolean hasRequestFulfilled;
 
     // Constructors
     public Friendship() {
     }
 
-    public Friendship(String userId, String partnerId, boolean hasFriendship) {
+    public Friendship(String userId, String partnerId, boolean hasFriendship, boolean hasRequestFulfilled) {
         this.userId = userId;
         this.partnerId = partnerId;
         this.hasFriendship = hasFriendship;
+        this.hasRequestFulfilled = hasRequestFulfilled;
     }
 
     // Getters and setters
@@ -40,5 +42,13 @@ public class Friendship {
 
     public void setHasFriendship(boolean hasFriendship) {
         this.hasFriendship = hasFriendship;
+    }
+
+    public boolean isHasRequestFulfilled() {
+        return hasRequestFulfilled;
+    }
+
+    public void setHasRequestFulfilled(boolean hasRequestFulfilled) {
+        this.hasRequestFulfilled = hasRequestFulfilled;
     }
 }

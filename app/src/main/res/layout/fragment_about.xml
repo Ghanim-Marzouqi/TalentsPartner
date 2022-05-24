@@ -4,12 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="10dp"
     tools:context=".fragments.AboutFragment">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="About Us"
-        android:gravity="center"/>
+        android:text="Talents Partner is a mobile application where you can find your talent mates very easily. The app will gather those people who have different talents, but still want to connect together. The app can make it very easy to its users to find those people they are willing to have a friendship with and share everything related to their beloved talents."
+        android:textSize="16sp"
+        android:justificationMode="inter_word" />
 
 </FrameLayout>
