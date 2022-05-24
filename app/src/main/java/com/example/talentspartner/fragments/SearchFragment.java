@@ -4,15 +4,20 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -28,6 +33,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SearchFragment extends Fragment {
 
@@ -36,6 +42,7 @@ public class SearchFragment extends Fragment {
     ListView lvTalentedPeople;
     List<User> talentedPeople = new ArrayList<>();
     MyAdapter adapter;
+    EditText etFilterByTalent;
     FirebaseAuth auth;
     FirebaseFirestore db;
 
@@ -47,6 +54,7 @@ public class SearchFragment extends Fragment {
         // Initialize
         swipeRefreshLayout = fragment.findViewById(R.id.swipe_refresh_layout);
         lvTalentedPeople = fragment.findViewById(R.id.lv_talented_people);
+        etFilterByTalent = fragment.findViewById(R.id.et_filter_by_talent);
 
         // Initialize Firebase Auth & Database
         auth = FirebaseAuth.getInstance();
@@ -58,6 +66,7 @@ public class SearchFragment extends Fragment {
         // Pull to refresh list
         swipeRefreshLayout.setOnRefreshListener(this::loadTalentedPeople);
 
+        // Select item from list
         lvTalentedPeople.setOnItemClickListener((parent, view, position, id) -> {
             // Detect any changes
             adapter.notifyDataSetChanged();
@@ -72,6 +81,32 @@ public class SearchFragment extends Fragment {
             Intent intent = new Intent(getActivity(), PartnerDetailsActivity.class);
             intent.putExtras(bundle);
             startActivity(intent);
+        });
+
+        // Filter list by talent
+        etFilterByTalent.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() > 0) {
+                    List<User> filteredList = talentedPeople.stream().filter(p -> p.getTalents().contains(charSequence)).collect(Collectors.toList());
+                    adapter = new MyAdapter(getActivity(), filteredList);
+                    lvTalentedPeople.setAdapter(adapter);
+                } else {
+                    adapter = new MyAdapter(getActivity(), talentedPeople);
+                    lvTalentedPeople.setAdapter(adapter);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
         });
 
         return fragment;
