@@ -2,11 +2,13 @@ package com.example.talentspartner.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -16,11 +18,14 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.talentspartner.PartnerDetailsActivity;
 import com.example.talentspartner.R;
@@ -33,6 +38,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class SearchFragment extends Fragment {
@@ -42,7 +48,9 @@ public class SearchFragment extends Fragment {
     ListView lvTalentedPeople;
     List<User> talentedPeople = new ArrayList<>();
     MyAdapter adapter;
+    SearchDialog searchDialog;
     EditText etFilterByTalent;
+    ImageView ivSearch;
     FirebaseAuth auth;
     FirebaseFirestore db;
 
@@ -55,6 +63,8 @@ public class SearchFragment extends Fragment {
         swipeRefreshLayout = fragment.findViewById(R.id.swipe_refresh_layout);
         lvTalentedPeople = fragment.findViewById(R.id.lv_talented_people);
         etFilterByTalent = fragment.findViewById(R.id.et_filter_by_talent);
+        ivSearch = fragment.findViewById(R.id.iv_search);
+        searchDialog = new SearchDialog(getActivity());
 
         // Initialize Firebase Auth & Database
         auth = FirebaseAuth.getInstance();
@@ -94,19 +104,23 @@ public class SearchFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.length() > 0) {
-                    List<User> filteredList = talentedPeople.stream().filter(p -> p.getTalents().contains(charSequence)).collect(Collectors.toList());
+                    List<User> filteredList = talentedPeople.stream().filter(p -> p.getTalents().toLowerCase(Locale.ROOT).contains(charSequence.toString().toLowerCase(Locale.ROOT))).collect(Collectors.toList());
                     adapter = new MyAdapter(getActivity(), filteredList);
-                    lvTalentedPeople.setAdapter(adapter);
                 } else {
                     adapter = new MyAdapter(getActivity(), talentedPeople);
-                    lvTalentedPeople.setAdapter(adapter);
                 }
+                lvTalentedPeople.setAdapter(adapter);
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
 
             }
+        });
+
+        // Search list
+        ivSearch.setOnClickListener(view -> {
+            searchDialog.show();
         });
 
         return fragment;
@@ -196,6 +210,36 @@ public class SearchFragment extends Fragment {
             }
 
             return v;
+        }
+    }
+
+    private class SearchDialog extends Dialog {
+
+        Context context;
+
+        public SearchDialog(@NonNull Context context) {
+            super(context);
+            this.context = context;
+        }
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+            setContentView(R.layout.custom_search_dialog);
+
+            Button yes = findViewById(R.id.btn_yes);
+            Button no = findViewById(R.id.btn_no);
+
+            yes.setOnClickListener(view -> {
+                Toast.makeText(context, "Yes", Toast.LENGTH_SHORT).show();
+                dismiss();
+            });
+
+            no.setOnClickListener(view -> {
+                Toast.makeText(context, "No", Toast.LENGTH_SHORT).show();
+                dismiss();
+            });
         }
     }
 }
