@@ -130,7 +130,6 @@ public class ProfileActivity extends AppCompatActivity {
             updatedUser.setPhone(etPhone.getText().toString());
             updatedUser.setAge(Integer.parseInt(etAge.getText().toString()));
             updatedUser.setTalents(etTalents.getText().toString());
-            updatedUser.setImageUrl("");
             if (spGender.getSelectedItem().toString().equals("- select gender -"))
             {
                 Toast.makeText(ProfileActivity.this, "Please select gender", Toast.LENGTH_SHORT).show();

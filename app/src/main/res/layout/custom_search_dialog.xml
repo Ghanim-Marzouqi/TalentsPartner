@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center"
     android:padding="10dp"
     android:orientation="vertical">
 
@@ -27,13 +28,13 @@
         android:textSize="15sp"/>
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="match_parent"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="10dp"
         android:weightSum="2">
 
         <EditText
+            android:id="@+id/et_min_age"
             android:layout_width="0dp"
             android:layout_height="38dp"
             android:layout_weight="1"
@@ -41,18 +42,20 @@
             android:hint="Min Age"
             android:gravity="center"
             android:padding="5dp"
-            android:textSize="15sp"/>
+            android:textSize="15sp"
+            android:layout_marginBottom="5dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text=" x "
+            android:text=" ~ "
             android:textSize="25sp"
             android:textColor="@color/black"
             android:textStyle="bold"
             android:gravity="center"/>
 
         <EditText
+            android:id="@+id/et_max_age"
             android:layout_width="0dp"
             android:layout_height="38dp"
             android:layout_weight="1"
@@ -60,33 +63,45 @@
             android:hint="Max Age"
             android:gravity="center"
             android:padding="5dp"
-            android:textSize="15sp"/>
+            android:textSize="15sp"
+            android:layout_marginBottom="5dp"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
+    <Spinner
+        android:id="@+id/sp_gender"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edittext"
+        android:ems="10"
+        android:inputType="number"
+        android:minHeight="38dp" />
+
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal" >
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:weightSum="1">
 
         <Button
-            android:id="@+id/btn_yes"
-            android:layout_width="100dp"
+            android:id="@+id/btn_search"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Yes"
-            android:textColor="#5DBCD2"
-            android:textStyle="bold" />
+            android:text="Search" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
 
         <Button
-            android:id="@+id/btn_no"
-            android:layout_width="100dp"
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:text="No"
-            android:textColor="#5DBCD2"
-            android:textStyle="bold" />
+            android:text="Cancel" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

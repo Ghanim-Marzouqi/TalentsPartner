@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -19,24 +20,35 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.talentspartner.PartnerDetailsActivity;
 import com.example.talentspartner.R;
+import com.example.talentspartner.RegistrationActivity;
 import com.example.talentspartner.models.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -216,28 +228,76 @@ public class SearchFragment extends Fragment {
     private class SearchDialog extends Dialog {
 
         Context context;
+        List<String> genders = Arrays.asList("- select gender -", "Male", "Female");
 
         public SearchDialog(@NonNull Context context) {
             super(context);
             this.context = context;
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             requestWindowFeature(Window.FEATURE_NO_TITLE);
             setContentView(R.layout.custom_search_dialog);
 
-            Button yes = findViewById(R.id.btn_yes);
-            Button no = findViewById(R.id.btn_no);
+            EditText etTalentKeywords = findViewById(R.id.et_talent_keywords);
+            EditText etMinAge = findViewById(R.id.et_min_age);
+            EditText etMaxAge = findViewById(R.id.et_max_age);
+            Spinner spGender = findViewById(R.id.sp_gender);
+            Button btnSearch = findViewById(R.id.btn_search);
+            Button btnCancel = findViewById(R.id.btn_cancel);
 
-            yes.setOnClickListener(view -> {
-                Toast.makeText(context, "Yes", Toast.LENGTH_SHORT).show();
-                dismiss();
+            // Feed spinner with data
+            ArrayAdapter spinnerAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, genders);
+            spGender.setAdapter(spinnerAdapter);
+
+            btnSearch.setOnClickListener(view -> {
+                String talentKeywords = etTalentKeywords.getText().toString();
+                int minAge = !etMinAge.getText().toString().isEmpty() ? Integer.parseInt(etMinAge.getText().toString().trim()) : 0;
+                int maxAge = !etMaxAge.getText().toString().isEmpty() ? Integer.parseInt(etMaxAge.getText().toString().trim()) : 0;
+                String gender = spGender.getSelectedItem().toString();
+
+                db.collection("users").addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        Toast.makeText(context, "Error while fetching data", Toast.LENGTH_SHORT).show();
+                        dismiss();
+                    }
+
+                    talentedPeople.clear();
+                    FirebaseUser firebaseUser = auth.getCurrentUser();
+                    for (DocumentSnapshot document : value) {
+                        User person = document.toObject(User.class);
+                        assert firebaseUser != null;
+                        if (!person.getId().equals(firebaseUser.getUid()))
+                            talentedPeople.add(person);
+                    }
+
+                    if (talentedPeople.size() > 0) {
+
+                        if (!talentKeywords.isEmpty())
+                            talentedPeople = talentedPeople.stream().filter(p -> p.getTalents().toLowerCase(Locale.ROOT).contains(talentKeywords.toLowerCase(Locale.ROOT))).collect(Collectors.toList());
+
+                        if (minAge != 0)
+                            talentedPeople = talentedPeople.stream().filter(p -> p.getAge() >= minAge).collect(Collectors.toList());
+
+                        if (maxAge != 0)
+                            talentedPeople = talentedPeople.stream().filter(p -> p.getAge() <= maxAge).collect(Collectors.toList());
+
+                        if (!gender.isEmpty() && !gender.equals("- select gender -"))
+                            talentedPeople = talentedPeople.stream().filter(p -> p.getGender().equals(gender)).collect(Collectors.toList());
+
+                        adapter = new MyAdapter(getActivity(), talentedPeople);
+                        lvTalentedPeople.setAdapter(adapter);
+                    }
+
+                    dismiss();
+                });
             });
 
-            no.setOnClickListener(view -> {
-                Toast.makeText(context, "No", Toast.LENGTH_SHORT).show();
+            btnCancel.setOnClickListener(view -> {
+                loadTalentedPeople();
                 dismiss();
             });
         }
