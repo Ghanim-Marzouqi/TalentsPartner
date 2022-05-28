@@ -179,7 +179,7 @@ public class FriendshipRequestsActivity extends AppCompatActivity {
                 person = people.get(i);
                 holder.tvPersonName.setText(person.getName());
                 holder.tvPersonTalents.setText(person.getTalents());
-                if (!person.getImageUrl().isEmpty()) {
+                if (person.getImageUrl() != null && !person.getImageUrl().isEmpty()) {
                     Picasso.with(FriendshipRequestsActivity.this)
                             .load(person.getImageUrl())
                             .resize(96, 96)

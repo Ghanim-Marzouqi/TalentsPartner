@@ -3,6 +3,7 @@ package com.example.talentspartner.fragments;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,6 +19,8 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.talentspartner.ChatActivity;
+import com.example.talentspartner.PartnerDetailsActivity;
 import com.example.talentspartner.R;
 import com.example.talentspartner.models.Friendship;
 import com.example.talentspartner.models.User;
@@ -30,7 +33,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatFragment extends Fragment {
+public class FriendsFragment extends Fragment {
 
     // Declaration
     SwipeRefreshLayout swipeRefreshLayout;
@@ -44,7 +47,7 @@ public class ChatFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View fragment = inflater.inflate(R.layout.fragment_chat, container, false);
+        View fragment = inflater.inflate(R.layout.fragment_friends, container, false);
 
         // Initialize
         swipeRefreshLayout = fragment.findViewById(R.id.swipe_refresh_layout);
@@ -56,6 +59,23 @@ public class ChatFragment extends Fragment {
 
         // Load all available people except the current user
         loadTalentedPeople();
+
+        // Select item from list
+        lvTalentedPeople.setOnItemClickListener((parent, view, position, id) -> {
+            // Detect any changes
+            adapter.notifyDataSetChanged();
+
+            // Get selected person
+            User person = talentedPeople.get(position);
+
+            // send person data to details activity
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("person", person);
+
+            Intent intent = new Intent(getActivity(), ChatActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
+        });
 
         // Pull to refresh list
         swipeRefreshLayout.setOnRefreshListener(this::loadTalentedPeople);
@@ -156,7 +176,7 @@ public class ChatFragment extends Fragment {
                 person = people.get(i);
                 holder.tvPersonName.setText(person.getName());
                 holder.tvPersonTalents.setText(person.getTalents());
-                if (!person.getImageUrl().isEmpty()) {
+                if (person.getImageUrl() != null && !person.getImageUrl().isEmpty()) {
                     Picasso.with(getActivity())
                             .load(person.getImageUrl())
                             .resize(96, 96)

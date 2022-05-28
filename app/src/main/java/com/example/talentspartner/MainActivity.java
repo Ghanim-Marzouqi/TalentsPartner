@@ -16,7 +16,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.talentspartner.fragments.AboutFragment;
-import com.example.talentspartner.fragments.ChatFragment;
+import com.example.talentspartner.fragments.FriendsFragment;
 import com.example.talentspartner.fragments.SearchFragment;
 import com.example.talentspartner.models.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                         drawer_user_name.setText(name);
                         drawer_user_email.setText(email);
 
-                        if (!imageUrl.isEmpty()) {
+                        if (imageUrl != null && !imageUrl.isEmpty()) {
                             Picasso.with(MainActivity.this)
                                     .load(imageUrl)
                                     .resize(96, 96)
@@ -188,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
                 manager.beginTransaction().replace(R.id.fragment, new SearchFragment()).commit();
                 break;
             case "CHAT":
-                manager.beginTransaction().replace(R.id.fragment, new ChatFragment()).commit();
+                manager.beginTransaction().replace(R.id.fragment, new FriendsFragment()).commit();
                 break;
             case "ABOUT_US":
                 manager.beginTransaction().replace(R.id.fragment, new AboutFragment()).commit();

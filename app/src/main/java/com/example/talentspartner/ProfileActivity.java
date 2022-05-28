@@ -100,7 +100,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 spGender.setSelection(2);
                         }
 
-                        if (!imageUrl.isEmpty()) {
+                        if (imageUrl != null && !imageUrl.isEmpty()) {
                             Picasso.with(ProfileActivity.this)
                                     .load(imageUrl)
                                     .resize(96, 96)
@@ -145,7 +145,6 @@ public class ProfileActivity extends AppCompatActivity {
             userRecord.put("phone", updatedUser.getPhone());
             userRecord.put("gender", updatedUser.getGender());
             userRecord.put("age", updatedUser.getAge());
-            userRecord.put("imageUrl", updatedUser.getImageUrl());
             userRecord.put("talents", updatedUser.getTalents());
 
             db.collection("users")

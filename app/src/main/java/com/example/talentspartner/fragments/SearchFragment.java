@@ -211,7 +211,7 @@ public class SearchFragment extends Fragment {
                 person = people.get(i);
                 holder.tvPersonName.setText(person.getName());
                 holder.tvPersonTalents.setText(person.getTalents());
-                if (!person.getImageUrl().isEmpty()) {
+                if (person.getImageUrl() != null && !person.getImageUrl().isEmpty()) {
                     Picasso.with(getActivity())
                             .load(person.getImageUrl())
                             .resize(96, 96)

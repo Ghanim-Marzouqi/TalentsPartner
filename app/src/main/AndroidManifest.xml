@@ -9,6 +9,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TalentsPartner">
         <activity
+            android:name=".ChatActivity"
+            android:exported="false"
+            android:theme="@style/Theme.TalentsPartner.NoActionBar" />
+        <activity
             android:name=".FriendshipRequestsActivity"
             android:exported="false" />
         <activity

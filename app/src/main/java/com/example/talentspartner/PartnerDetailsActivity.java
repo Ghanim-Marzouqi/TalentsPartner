@@ -83,7 +83,7 @@ public class PartnerDetailsActivity extends AppCompatActivity {
             tvGender.setText(person.getGender());
             tvAge.setText(String.valueOf(person.getAge()));
             tvTalents.setText(person.getTalents());
-            if (!person.getImageUrl().isEmpty()) {
+            if (person.getImageUrl() != null && !person.getImageUrl().isEmpty()) {
                 Picasso.with(PartnerDetailsActivity.this)
                         .load(person.getImageUrl())
                         .resize(256, 256)
